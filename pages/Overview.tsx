@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { 
   Plus, 
   Zap, 
@@ -15,6 +15,7 @@ import TopRivalsWidget from '../components/missionControl/TopRivalsWidget';
 import OpportunitiesWidget from '../components/missionControl/OpportunitiesWidget';
 import PulseFeed from '../components/missionControl/PulseFeed';
 import GeoAlertsSection from '../components/missionControl/GeoAlertsSection';
+import RoiCorrelationWidget from '../components/missionControl/RoiCorrelationWidget';
 import AddQueryModal from '../components/AddQueryModal';
 import AddCompetitorModal from '../components/AddCompetitorModal';
 import CreditConfirmationModal from '../components/CreditConfirmationModal';
@@ -54,7 +55,7 @@ const Overview: React.FC<OverviewProps> = ({
   onNavigateToRankings,
   onNavigateToQueries
 }) => {
-  const { actions } = useWorkspace();
+  const { actions, integrationSettings } = useWorkspace();
   const [isScanning, setIsScanning] = useState(false);
   const [scanSuccess, setScanSuccess] = useState(false);
   const [showScanConfirm, setShowScanConfirm] = useState(false);
@@ -134,6 +135,10 @@ const Overview: React.FC<OverviewProps> = ({
   // Calculate days for mock data fetch
   const historyDays = timeRange === '7d' ? 7 : timeRange === '30d' ? 30 : timeRange === '90d' ? 90 : customDays;
 
+  const trendData = useMemo(() => mockService.getHistoryData(historyDays), [historyDays]);
+  const roiCorrelationData = useMemo(() => mockService.getRoiCorrelationData(historyDays), [historyDays]);
+  const isGscConnected = integrationSettings?.gsc?.status === 'connected';
+
   return (
     <div className="p-8 space-y-8 overflow-y-auto h-full pb-20 page-transition bg-background/50">
       
@@ -198,7 +203,7 @@ const Overview: React.FC<OverviewProps> = ({
             score={metrics.overallVisibilityIndex}
             delta={metrics.delta}
             engineScores={metrics.engineAverages}
-            trendData={mockService.getHistoryData(historyDays)}
+            trendData={trendData}
             lastScanAt={new Date().toISOString()}
             performanceData={performanceData}
             timeRange={timeRange}
@@ -215,7 +220,15 @@ const Overview: React.FC<OverviewProps> = ({
           />
         </div>
 
-        {/* Row 2: Tracked Questions, Rivals, & Discovery */}
+        {/* Row 2: ROI Correlation — Visibility vs Organic Clicks */}
+        <div className="xl:col-span-4">
+          <RoiCorrelationWidget
+            data={roiCorrelationData}
+            isGscConnected={isGscConnected}
+          />
+        </div>
+
+        {/* Row 3: Tracked Questions, Rivals, & Discovery */}
         <div className="xl:col-span-2 min-h-[400px]">
           <TrackedQuestionsWidget 
             queries={queries} 
@@ -238,12 +251,12 @@ const Overview: React.FC<OverviewProps> = ({
             />
         </div>
 
-        {/* Row 3: Scan-Based Risk Monitor (Full Width) */}
+        {/* Row 4: Scan-Based Risk Monitor (Full Width) */}
         <div className="xl:col-span-4">
           <GeoAlertsSection alerts={geoAlerts} onResolve={handleResolveAlert} />
         </div>
 
-        {/* Row 4: Pulse (Full Width) */}
+        {/* Row 5: Pulse (Full Width) */}
         <div className="xl:col-span-4">
            <PulseFeed events={pulseEvents} />
         </div>

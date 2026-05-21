@@ -363,9 +363,20 @@ class MockDataService {
   }
 
   getHistoryData(days: number) {
+    const base = this.getMetrics().overallVisibilityIndex;
     return Array.from({ length: days }).map((_, i) => ({
-      day: new Date(Date.now() - (days - 1 - i) * 86400000).toLocaleDateString(),
-      score: 60 + Math.floor(Math.random() * 20)
+      day: new Date(Date.now() - (days - 1 - i) * 86400000).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+      score: Math.max(0, Math.min(100, Math.round(base - 8 + i * (16 / Math.max(days - 1, 1)) + Math.sin(i * 0.5) * 4)))
+    }));
+  }
+
+  /** Visibility Index vs organic clicks — dashboard ROI correlation chart */
+  getRoiCorrelationData(days: number) {
+    const base = this.getMetrics().overallVisibilityIndex;
+    return Array.from({ length: days }).map((_, i) => ({
+      day: new Date(Date.now() - (days - 1 - i) * 86400000).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+      visibility: Math.max(0, Math.min(100, Math.round(base - 6 + i * (12 / Math.max(days - 1, 1)) + Math.sin(i * 0.45) * 3))),
+      clicks: Math.round(420 + i * 28 + Math.sin(i * 0.35) * 80 + (base / 100) * 120)
     }));
   }
 

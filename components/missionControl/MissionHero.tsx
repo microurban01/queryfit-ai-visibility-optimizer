@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { AreaChart, Area, XAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import { Activity, TrendingUp, TrendingDown, Eye, Zap, Smartphone, Monitor, Link2, AlertCircle, Calendar } from 'lucide-react';
 import { Engine } from '../../types';
 import { PagePerformanceSummary } from '../../types/performanceTypes';
@@ -195,35 +195,61 @@ const MissionHero: React.FC<MissionHeroProps> = ({
             </div>
           </div>
 
-          <div className="flex-1 h-[180px] min-h-[180px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={safeTrendData}>
-                <defs>
-                  <linearGradient id="heroGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.2}/>
-                    <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
-                <XAxis 
-                  dataKey="day" 
-                  hide
-                />
-                <Tooltip 
-                  contentStyle={{ backgroundColor: '#09090b', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
-                  itemStyle={{ fontWeight: 'bold', color: '#fff' }}
-                  labelStyle={{ fontSize: '10px', color: '#a1a1aa', marginBottom: '4px', textTransform: 'uppercase', fontWeight: '900' }}
-                />
-                <Area 
-                  type="monotone" 
-                  dataKey="score" 
-                  stroke="#8b5cf6" 
-                  strokeWidth={3} 
-                  fill="url(#heroGradient)" 
-                  animationDuration={1500}
-                />
-              </AreaChart>
-            </ResponsiveContainer>
+          <div className="w-full min-w-0 shrink-0">
+            <div className="flex items-center justify-between mb-2 px-1">
+              <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest flex items-center gap-1.5">
+                <TrendingUp size={10} className="text-primary-400" />
+                Visibility Trend
+              </span>
+            </div>
+            <div className="w-full h-[200px] min-h-[200px]">
+              <ResponsiveContainer width="100%" height={200}>
+                <AreaChart data={safeTrendData} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="heroGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.35}/>
+                      <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.08)" vertical={false} />
+                  <XAxis
+                    dataKey="day"
+                    stroke="rgba(255,255,255,0.35)"
+                    fontSize={10}
+                    tickLine={false}
+                    axisLine={false}
+                    dy={8}
+                    fontWeight="bold"
+                    interval="preserveStartEnd"
+                    minTickGap={32}
+                  />
+                  <YAxis
+                    stroke="rgba(255,255,255,0.35)"
+                    fontSize={10}
+                    tickLine={false}
+                    axisLine={false}
+                    domain={[0, 100]}
+                    tickCount={5}
+                    fontWeight="bold"
+                  />
+                  <Tooltip
+                    contentStyle={{ backgroundColor: '#09090b', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
+                    itemStyle={{ fontWeight: 'bold', color: '#fff' }}
+                    labelStyle={{ fontSize: '10px', color: '#a1a1aa', marginBottom: '4px', textTransform: 'uppercase', fontWeight: '900' }}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="score"
+                    name="Visibility"
+                    stroke="#8b5cf6"
+                    strokeWidth={3}
+                    fill="url(#heroGradient)"
+                    animationDuration={800}
+                    isAnimationActive={true}
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
           </div>
 
           {/* Integrated Core Web Vitals */}
