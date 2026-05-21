@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
+import ChartContainer from '../ChartContainer';
 import { Activity, TrendingUp, TrendingDown, Eye, Zap, Smartphone, Monitor, Link2, AlertCircle, Calendar } from 'lucide-react';
 import { Engine } from '../../types';
 import { PagePerformanceSummary } from '../../types/performanceTypes';
@@ -202,35 +203,41 @@ const MissionHero: React.FC<MissionHeroProps> = ({
                 Visibility Trend
               </span>
             </div>
-            <div className="w-full h-[200px] min-h-[200px]">
-              <ResponsiveContainer width="100%" height={200}>
-                <AreaChart data={safeTrendData} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
+            <ChartContainer height={200}>
+              {({ width, height }) => (
+                <AreaChart
+                  width={width}
+                  height={height}
+                  data={safeTrendData}
+                  margin={{ top: 8, right: 12, left: 4, bottom: 4 }}
+                >
                   <defs>
-                    <linearGradient id="heroGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.35}/>
-                      <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/>
+                    <linearGradient id="heroVisibilityGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.4} />
+                      <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.08)" vertical={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" vertical={false} />
                   <XAxis
                     dataKey="day"
-                    stroke="rgba(255,255,255,0.35)"
+                    stroke="rgba(255,255,255,0.4)"
                     fontSize={10}
                     tickLine={false}
                     axisLine={false}
                     dy={8}
                     fontWeight="bold"
                     interval="preserveStartEnd"
-                    minTickGap={32}
+                    minTickGap={28}
                   />
                   <YAxis
-                    stroke="rgba(255,255,255,0.35)"
+                    stroke="rgba(255,255,255,0.4)"
                     fontSize={10}
                     tickLine={false}
                     axisLine={false}
                     domain={[0, 100]}
                     tickCount={5}
                     fontWeight="bold"
+                    width={36}
                   />
                   <Tooltip
                     contentStyle={{ backgroundColor: '#09090b', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
@@ -243,13 +250,16 @@ const MissionHero: React.FC<MissionHeroProps> = ({
                     name="Visibility"
                     stroke="#8b5cf6"
                     strokeWidth={3}
-                    fill="url(#heroGradient)"
+                    fill="url(#heroVisibilityGradient)"
+                    fillOpacity={1}
+                    dot={false}
+                    activeDot={{ r: 5, fill: '#a78bfa', stroke: '#fff', strokeWidth: 2 }}
                     animationDuration={800}
                     isAnimationActive={true}
                   />
                 </AreaChart>
-              </ResponsiveContainer>
-            </div>
+              )}
+            </ChartContainer>
           </div>
 
           {/* Integrated Core Web Vitals */}

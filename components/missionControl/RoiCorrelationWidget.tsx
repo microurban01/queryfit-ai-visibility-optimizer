@@ -8,10 +8,10 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-  ResponsiveContainer,
 } from 'recharts';
 import { Link2, TrendingUp } from 'lucide-react';
 import InfoTooltip from '../InfoTooltip';
+import ChartContainer from '../ChartContainer';
 
 interface RoiCorrelationWidgetProps {
   data: { day: string; visibility: number; clicks: number }[];
@@ -56,19 +56,24 @@ const RoiCorrelationWidget: React.FC<RoiCorrelationWidgetProps> = ({
         </div>
       </div>
 
-      <div className="relative z-10 w-full h-[260px] min-h-[260px]">
-        <ResponsiveContainer width="100%" height={260}>
-          <ComposedChart data={safeData} margin={{ top: 10, right: 12, left: -8, bottom: 0 }}>
+      <ChartContainer height={260} className="relative z-10">
+        {({ width, height }) => (
+          <ComposedChart
+            width={width}
+            height={height}
+            data={safeData}
+            margin={{ top: 10, right: 16, left: 4, bottom: 4 }}
+          >
             <defs>
               <linearGradient id="roiVisibilityGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.25} />
+                <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3} />
                 <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.08)" vertical={false} />
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" vertical={false} />
             <XAxis
               dataKey="day"
-              stroke="rgba(255,255,255,0.35)"
+              stroke="rgba(255,255,255,0.4)"
               fontSize={10}
               tickLine={false}
               axisLine={false}
@@ -86,14 +91,7 @@ const RoiCorrelationWidget: React.FC<RoiCorrelationWidgetProps> = ({
               domain={[0, 100]}
               tickCount={5}
               fontWeight="bold"
-              label={{
-                value: 'Visibility',
-                angle: -90,
-                position: 'insideLeft',
-                fill: 'rgba(167, 139, 250, 0.8)',
-                fontSize: 9,
-                fontWeight: 700,
-              }}
+              width={40}
             />
             <YAxis
               yAxisId="clicks"
@@ -103,14 +101,7 @@ const RoiCorrelationWidget: React.FC<RoiCorrelationWidgetProps> = ({
               tickLine={false}
               axisLine={false}
               fontWeight="bold"
-              label={{
-                value: 'Clicks',
-                angle: 90,
-                position: 'insideRight',
-                fill: 'rgba(16, 185, 129, 0.8)',
-                fontSize: 9,
-                fontWeight: 700,
-              }}
+              width={48}
             />
             <Tooltip
               contentStyle={{
@@ -146,14 +137,14 @@ const RoiCorrelationWidget: React.FC<RoiCorrelationWidgetProps> = ({
               dataKey="clicks"
               name="Organic Clicks"
               fill="#10b981"
-              fillOpacity={0.55}
+              fillOpacity={0.6}
               radius={[4, 4, 0, 0]}
-              barSize={Math.max(8, Math.min(24, Math.floor(320 / safeData.length)))}
+              barSize={Math.max(8, Math.min(24, Math.floor(width / safeData.length) - 4))}
               animationDuration={800}
             />
           </ComposedChart>
-        </ResponsiveContainer>
-      </div>
+        )}
+      </ChartContainer>
 
       <div className="relative z-10 mt-4 flex items-center gap-2 text-[10px] font-bold text-muted-foreground">
         <TrendingUp size={12} className="text-emerald-500" />
